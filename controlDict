@@ -1,0 +1,124 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs
+(
+    "libimmersedBoundary.so"
+    "libincompressibleImmersedBoundaryTurbulence.so"
+    "liblduSolvers.so"
+)
+
+application     simpleFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         4100;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   100;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+functions
+(
+    forces
+    {
+        type        forces;
+        functionObjectLibs ( "libforcesNew.so" );
+        outputControl timeStep;
+        outputInterval 100;
+        patches
+        (
+            airfoil
+        );
+        pName       p;
+        UName       U;
+	rhoName	    rhoInf;
+        log         true;
+        rhoInf      1;
+        CofR        ( 0 0 0 );
+        liftDir     ( -0.17365 0 0.9848 );
+        dragDir     ( 0.9848 0 0.17365 );
+	heightDir   (0 0 1);
+        pitchAxis   ( 0 1 0 );
+        magUInf     30;
+        lRef        1;
+        Aref        1;
+    }
+);
+
+//libs ( "libOpenFOAM.so" "libgroovyBC.so" ) ;
+
+/*functions
+(
+    minMaxP
+    {
+        type minMaxField;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+        name p;
+    }
+    minMaxU
+    {
+        type minMaxField;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+        name U;
+    }
+    minMaxEpsilon
+    {
+        type maxFieldCell;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+        name epsilon;
+    }
+    minMaxEpsilon
+    {
+        type maxFieldCell;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+        name nut;
+    }
+    func1
+    {
+        type faceSource;
+        fields (T);
+        valueOutput false;
+        source patch;
+        operation average;
+        sourceName outlet;
+        outputControl timeStep;
+        outputInterval 1;
+    }
+);*/
+
+
+// ************************************************************************* //
