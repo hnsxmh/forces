@@ -1,0 +1,128 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | foam-extend: Open Source CFD
+   \\    /   O peration     | Version:     4.1
+    \\  /    A nd           | Web:         http://www.foam-extend.org
+     \\/     M anipulation  | For copyright notice see file Copyright
+-------------------------------------------------------------------------------
+License
+    This file is part of foam-extend.
+
+    foam-extend is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 3 of the License, or (at your
+    option) any later version.
+
+    foam-extend is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    Foam::sixDoFRigidBodyMotionRestraints::sphericalAngularSpring
+
+Description
+    sixDoFRigidBodyMotionRestraints model.  Spherical angular spring.
+
+SourceFiles
+    sphericalAngularSpring.C
+
+\*---------------------------------------------------------------------------*/
+
+#ifndef sphericalAngularSpring_H
+#define sphericalAngularSpring_H
+
+#include "sixDoFRigidBodyMotionRestraint.H"
+#include "point.H"
+#include "tensor.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+
+namespace sixDoFRigidBodyMotionRestraints
+{
+
+/*---------------------------------------------------------------------------*\
+                   Class sphericalAngularSpring Declaration
+\*---------------------------------------------------------------------------*/
+
+class sphericalAngularSpring
+:
+    public sixDoFRigidBodyMotionRestraint
+{
+    // Private data
+
+        //- Reference orientation where there is no moment
+        tensor refQ_;
+
+        //- Spring stiffness coefficient (Nm/rad)
+        scalar stiffness_;
+
+        //- Damping coefficient (Nms/rad)
+        scalar damping_;
+
+
+public:
+
+    //- Runtime type information
+    TypeName("sphericalAngularSpring");
+
+
+    // Constructors
+
+        //- Construct from components
+        sphericalAngularSpring
+        (
+            const dictionary& sDoFRBMRDict
+        );
+
+        //- Construct and return a clone
+        virtual autoPtr<sixDoFRigidBodyMotionRestraint> clone() const
+        {
+            return autoPtr<sixDoFRigidBodyMotionRestraint>
+            (
+                new sphericalAngularSpring(*this)
+            );
+        }
+
+
+    // Destructor
+
+        virtual ~sphericalAngularSpring();
+
+
+    // Member Functions
+
+        //- Calculate the restraint position, force and moment.
+        //  Global reference frame vectors.
+        virtual void restrain
+        (
+            const sixDoFRigidBodyMotion& motion,
+            vector& restraintPosition,
+            vector& restraintForce,
+            vector& restraintMoment
+        ) const;
+
+        //- Update properties from given dictionary
+        virtual bool read(const dictionary& sDoFRBMRCoeff);
+
+        //- Write
+        virtual void write(Ostream&) const;
+};
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace solidBodyMotionFunctions
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
+
+// ************************************************************************* //
