@@ -29,7 +29,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         4100;
+endTime         4200;
 
 deltaT          1;
 
@@ -58,7 +58,7 @@ functions
         type        forces;
         functionObjectLibs ( "libforcesNew.so" );
         outputControl timeStep;
-        outputInterval 100;
+        outputInterval 5;
         patches
         (
             airfoil
@@ -69,14 +69,37 @@ functions
         log         true;
         rhoInf      1;
         CofR        ( 0 0 0 );
-        liftDir     ( -0.17365 0 0.9848 );
-        dragDir     ( 0.9848 0 0.17365 );
-	heightDir   (0 0 1);
+        liftDir     ( -0.1737 0 0.9846 );
+        dragDir     ( 0.9846 0 0.1737 );
+	heightDir   ( -0.1737 0 0.9846);
         pitchAxis   ( 0 1 0 );
         magUInf     30;
         lRef        1;
         Aref        1;
     }
+    /*forces
+    {
+        type        forceCoeffs;
+        functionObjectLibs ( "libforces.so" );
+        outputControl timeStep;
+        outputInterval 1;
+        patches
+        (
+            airfoil
+        );
+        pName       p;
+        UName       U;
+            rhoName         rhoInf;
+        log         true;
+        rhoInf      1;
+        CofR        ( 0 0 0 );
+        liftDir     ( -0.1737 0 0.9846 );
+        dragDir     ( 0.9846 0 0.1737 );
+        pitchAxis   ( 0 1 0 );
+        magUInf     30;
+        lRef        1;
+        Aref        1;
+    }*/
 );
 
 //libs ( "libOpenFOAM.so" "libgroovyBC.so" ) ;
