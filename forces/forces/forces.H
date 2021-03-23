@@ -153,6 +153,9 @@ protected:
             //Height direction
             vector heightDir_;
 
+            //
+            scalar magUInf_;
+
 
         //- Forces/moment file ptr
         autoPtr<OFstream> forcesFilePtr_;

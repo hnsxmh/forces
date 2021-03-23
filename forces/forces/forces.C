@@ -193,6 +193,7 @@ Foam::forces::forces
     CofR_(vector::zero),
     forcesFilePtr_(nullptr),
     ///////////////////////
+    magUInf_(0),
     heightDir_(vector::zero)
 {
     // Check if the available mesh is an fvMesh otherise deactivate
@@ -299,6 +300,8 @@ void Foam::forces::read(const dictionary& dict)
         CofR_ = dict.lookup("CofR");
         ///
         heightDir_ = dict.lookup("heightDir");
+
+        magUInf_ = dict.lookupOrDefault<scalar>("magUInf", 0.0);
     }
 }
 
@@ -482,12 +485,16 @@ Foam::forces::forcesMoments Foam::forces::calcForcesMoment() const
 
                 scalar sAface = mag(Sfb[patchi][faceI]); 
 
-                if (sAface != 0) {
+                scalar yAxis = mesh.C().boundaryField()[patchi][faceI].y();
+
+                if (sAface != 0 && yAxis > -0.1 && yAxis < 0.1) {
 
                     //scalar pScalar = (Sfb[patchi][faceI] / sAface & test) * (p.boundaryField()[patchi][faceI] - pRef);
-                    scalar pScalar = (Sfb[patchi][faceI] / sAface & heightDir_) * (p.boundaryField()[patchi][faceI] - pRef);
-                    
-                    Tuple2<scalar, scalar> tmpP(mesh.C().boundaryField()[patchi][faceI].x(), pScalar);
+                    scalar pScalar = mag(Sfb[patchi][faceI] & heightDir_) * (p.boundaryField()[patchi][faceI] - pRef) / sAface;
+
+                    scalar Cp = pScalar * scalar(2.0) /  pow(magUInf_, 2) ;
+
+                    Tuple2<scalar, scalar> tmpP(mesh.C().boundaryField()[patchi][faceI].x(), Cp);
 
                     if (mesh.C().boundaryField()[patchi][faceI].z() < 0) {
                         pProfile_bottom.append(tmpP);
